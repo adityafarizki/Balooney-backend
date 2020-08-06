@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "balooney backend",
+  "main": "./dist/index.js",
+  "repository": "https://github.com/adityafarizki/Balooney-backend.git",
+  "author": "adityafarizki",
+  "license": "MIT",
+  "scripts": {
+    "tsc": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.27",
+    "@types/ws": "^7.2.6",
+    "enzyme": "^3.11.0",
+    "jest": "^26.2.2",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "ws": "^7.3.1"
+  }
+}
