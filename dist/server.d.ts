@@ -1,6 +1,9 @@
 /// <reference types="node" />
 import * as https from "https";
-declare type ServerListenerCallback = (ws: Object, msg: string) => void;
+declare type Sendable = {
+    send: (msg: string) => void;
+};
+declare type ServerListenerCallback = (ws: Sendable, msg: string) => void;
 declare type ServerConstructorParams = {
     listenerCallback: ServerListenerCallback;
     listenAddress?: string;

@@ -11,7 +11,8 @@ class GameController {
         });
     }
     processMessage(ws, msg) {
-        console.log(ws, msg);
+        console.log(msg);
+        ws.send(msg);
     }
     start() {
         this.server.start();

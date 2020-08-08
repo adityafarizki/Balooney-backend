@@ -2,15 +2,6 @@ import * as WebSocket from "ws";
 import * as fs from "fs";
 import * as https from "https";
 
-type ServerListenerCallback = (ws: Object, msg: string) => void
-type ServerConstructorParams = {
-    listenerCallback: ServerListenerCallback,
-    listenAddress?: string,
-    port?: number,
-    sslKeyFile?: string,
-    sslCertFile?: string
-}
-
 export class Server {
     listenAddress: string;
     port: number;
@@ -57,6 +48,10 @@ export class Server {
 
     start(): void {
         this.server.listen(this.port);
+    }
+
+    stop(): void {
+        this.server.close();
     }
 }
 

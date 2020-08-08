@@ -6,5 +6,4 @@ let config = {
 }
 
 let mainController: GameController = new GameController(config)
-
 mainController.start()
