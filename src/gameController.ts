@@ -21,7 +21,7 @@ export class GameController {
         });
     }
 
-    processMessage(ws: Sendable, msg: GameMessage): void {
+    processMessage(ws: ws, msg: GameMessage): void {
         switch(msg.action) {
             case 'add_player':
                 this.addPlayer(ws, msg);
@@ -32,7 +32,7 @@ export class GameController {
         }
     }
 
-    handleMessage(ws: Sendable, msg: string): void {
+    handleMessage(ws: ws, msg: string): void {
         try {
             let gameMsg: GameMessage = JSON.parse(msg);
             this.processMessage(ws, gameMsg);
@@ -43,20 +43,26 @@ export class GameController {
         }
     }
 
-    addScreen(ws: Sendable): void {
+    addScreen(ws: ws): void {
         if(this.gameState != 'initiating') {
-            let errorMsg = 'Game is already underway';
-            ws.send(errorMsg);
+            let errorMessage = {
+                statusCode: 403,
+                error: 'Game is already running'
+            };
+            ws.send(JSON.stringify(errorMessage));
             return;
         }
         this.screens.push({ socket: ws });
         this.updateScreen();
     }
 
-    addPlayer(ws: Sendable, msg: GameMessage): void {
+    addPlayer(ws: ws, msg: GameMessage): void {
         if(this.players.length >= 3) {
-            let gameFullMessage = 'Game is already full';
-            ws.send(gameFullMessage);
+            let gameFullMessage = {
+                statusCode: 403,
+                error: 'Game is already full'
+            };
+            ws.send(JSON.stringify(gameFullMessage));
             return;
         }
 
@@ -75,8 +81,11 @@ export class GameController {
             tags: []
         });
 
-        let successMsg = 'Player registration successful';
-        ws.send(successMsg);
+        let successMsg = {
+            statusCode: 200,
+            message: "Player registration successful"
+        }
+        ws.send(JSON.stringify(successMsg));
         this.updateScreen();
     }
 

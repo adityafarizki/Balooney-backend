@@ -3,13 +3,13 @@ declare type GameControllerConstructorParams = {
     listenAddress: string;
     port: number;
 };
-declare type Sendable = {
+declare type ws = {
     send: (msg: string) => void;
 };
 export declare class GameController {
     server: Server;
     constructor({ listenAddress, port }: GameControllerConstructorParams);
-    processMessage(ws: Sendable, msg: string): void;
+    processMessage(ws: ws, msg: string): void;
     start(): void;
 }
 export {};

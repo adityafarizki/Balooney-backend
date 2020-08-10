@@ -1,4 +1,4 @@
-import * as WebSocket from "ws";
+import * as ws from "ws";
 import * as fs from "fs";
 import * as https from "https";
 
@@ -24,7 +24,7 @@ export class Server {
         this.server = this.initServer()
         this.listenerCallback = listenerCallback;
         this.initServer();
-        this.initWebSocket();
+        this.initws();
     }
 
     initServer(): https.Server {
@@ -35,8 +35,8 @@ export class Server {
         return https.createServer(options);
     }
 
-    initWebSocket(): void {
-        let wss = new WebSocket.Server({ server: this.server });
+    initws(): void {
+        let wss = new ws.Server({ server: this.server });
         let server = this;
         wss.on('connection', function connection(ws) {
             ws.on('message', function message(msg) {
