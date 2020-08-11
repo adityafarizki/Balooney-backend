@@ -12,5 +12,8 @@ module.exports = {
     "src/*.ts",
     "src/**/*",
     "!src/tests"
+  ],
+  coveragePathIgnorePatterns: [
+    "src/index.ts"
   ]
 };

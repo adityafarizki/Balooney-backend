@@ -4,7 +4,7 @@ type GameControllerConstructorParams = {
 };
 type GameMessage = {
     action: string,
-    content: Object
+    content: any
 };
 type GameScreen = {
     socket: ws | Sendable

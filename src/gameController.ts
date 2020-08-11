@@ -1,45 +1,49 @@
-import { Server } from "./server";
-import * as faker from "faker";
+import { Server } from "./server"
 
 export class GameController {
-    server: Server;
-    screens: GameScreen[];
-    players: Player[];
-    gameState: string;
+    server: Server
+    screens: GameScreen[]
+    players: Player[]
+    gameState: string
 
     constructor({
         listenAddress,
         port
     }: GameControllerConstructorParams) {
-        this.screens = [];
-        this.players = [];
-        this.gameState = 'initiating';
+        this.screens = []
+        this.players = []
+        this.gameState = 'initiating'
         this.server = new Server({
             listenerCallback: this.handleMessage.bind(this),
             listenAddress: listenAddress,
             port: port
-        });
+        })
     }
 
     processMessage(ws: ws, msg: GameMessage): void {
         switch(msg.action) {
             case 'add_player':
-                this.addPlayer(ws, msg);
-                break;
+                this.addPlayer(ws, msg)
+                break
             case 'add_screen':
-                this.addScreen(ws);
-                break;
+                this.addScreen(ws)
+                break
+            default:
+                throw new Error("Unknown action")
         }
     }
 
     handleMessage(ws: ws, msg: string): void {
         try {
-            let gameMsg: GameMessage = JSON.parse(msg);
-            this.processMessage(ws, gameMsg);
+            let gameMsg: GameMessage = JSON.parse(msg)
+            this.processMessage(ws, gameMsg)
         } catch (e) {
-            let errorMsg = 'error occured ' + e;
-            ws.send(errorMsg);
-            return;
+            let errorMsg = {
+                statusCode: 400,
+                error: "error occured: " + e
+            }
+            ws.send(JSON.stringify(errorMsg))
+            return
         }
     }
 
@@ -48,45 +52,40 @@ export class GameController {
             let errorMessage = {
                 statusCode: 403,
                 error: 'Game is already running'
-            };
-            ws.send(JSON.stringify(errorMessage));
-            return;
+            }
+            ws.send(JSON.stringify(errorMessage))
+            return
         }
-        this.screens.push({ socket: ws });
-        this.updateScreen();
+        this.screens.push({ socket: ws })
+        this.updateScreen()
     }
 
     addPlayer(ws: ws, msg: GameMessage): void {
-        if(this.players.length >= 3) {
+        if(this.players.length >= 3 || this.gameState != "initiating") {
             let gameFullMessage = {
                 statusCode: 403,
-                error: 'Game is already full'
-            };
-            ws.send(JSON.stringify(gameFullMessage));
-            return;
+                error: 'Cannot add more player'
+            }
+            ws.send(JSON.stringify(gameFullMessage))
+            return
         }
 
-        let playerContent = msg.content;
-        let name: string;
-        if('name' in playerContent) {
-            name = playerContent['name'];
-        } else {
-            name = faker.name.findName();
-        }
+        let playerContent = msg.content
+        let name = <string> playerContent['name']
 
         this.players.push({
             socket: ws,
             name: name, 
             score: 0,
             tags: []
-        });
+        })
 
         let successMsg = {
             statusCode: 200,
             message: "Player registration successful"
         }
-        ws.send(JSON.stringify(successMsg));
-        this.updateScreen();
+        ws.send(JSON.stringify(successMsg))
+        this.updateScreen()
     }
 
     updateScreen(): void {
@@ -100,15 +99,15 @@ export class GameController {
             gameState: this.gameState
         })
         this.screens.forEach((screen) => {
-            screen.socket.send(payload);
+            screen.socket.send(payload)
         })
     }
 
     start(): void {
-        this.server.start();
+        this.server.start()
     }
 
     stop(): void {
-        this.server.stop();
+        this.server.stop()
     }
 }
